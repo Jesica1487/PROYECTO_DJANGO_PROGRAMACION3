@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Listado de Tareas{% endblock %}
+
+{% block contenido %}
+<h2>Tareas Pendientes y Completadas</h2>
+
+<table class="table table-striped table-bordered" border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead class="table-dark">
+        <tr style="background-color: #333; color: white;">
+            <th style="padding: 8px;">Título Tarea</th>
+            <th style="padding: 8px;">Estado</th>
+            <th style="padding: 8px;">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in mis_tareas %}
+        <tr>
+            <!-- Título -->
+            <td style="padding: 8px;">
+                <span class="{% if tarea.completada %}completada{% endif %}">
+                    <strong>{{ tarea.titulo }}</strong>
+                </span>
+            </td>
+
+            <!-- Estado -->
+            <td style="padding: 8px;">
+                {% if tarea.completada %}
+                    <span class="badge bg-success">Completada</span>
+                {% else %}
+                    <span class="badge bg-danger">Pendiente</span>
+                {% endif %}
+            </td>
+
+            <!-- Opciones -->
+            <td style="padding: 8px;">
+                <div class="btn-group" role="group">
+                    <!-- Botón Editar / Modificar (TP4) -->
+                    <a href="{% url 'modificar_tarea' tarea.id %}" 
+                       class="btn btn-warning btn-sm"
+                       style="background-color: #ffc107; color: black; padding: 4px 8px; text-decoration: none; border-radius: 4px; margin-right: 5px; display: inline-block;">
+                        Editar
+                    </a>
+
+                    <!-- Formulario Eliminar -->
+        <form action="{% url 'eliminar_tarea' tarea.id %}" method="POST" style="display: inline-block;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">
+                Eliminar
+            </button>
+        </form>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" style="text-align: center; padding: 10px;">
+                No hay tareas anotadas. ¡Buen trabajo!
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
